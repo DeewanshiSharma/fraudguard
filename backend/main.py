@@ -7,16 +7,18 @@ from typing import List
 
 app = FastAPI(title="Fraud Guard API")
 
-# ✅ FIXED CORS - Remove empty strings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://fraudguard-11fl.onrender.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Load model
 try:
     model_data = joblib.load("fraud_model.pkl")
     w = model_data['w']
@@ -30,7 +32,7 @@ except Exception as e:
     raise
 
 def sigmoid(z):
-    return 1.0 / (1.0 + np.exp(-np.clip(z, -500, 500)))  # ✅ Prevent overflow
+    return 1.0 / (1.0 + np.exp(-np.clip(z, -500, 500)))
 
 class TransactionInput(BaseModel):
     features: List[float]
